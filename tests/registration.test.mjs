@@ -46,3 +46,19 @@ test('expired sessions and changed passwords revoke access',async()=>{
  env.ADMIN_PASSWORD='a-different-test-secret-password';assert.equal((await worker.fetch(request('/api/admin/registrations',undefined,token),env)).status,401);
  env.ADMIN_PASSWORD='test-only-password-at-least-16';await env.DB.prepare('UPDATE admin_sessions SET expires_at=0').run();assert.equal((await worker.fetch(request('/api/admin/registrations',undefined,token),env)).status,401);
 });
+
+test('meal and visit preferences round-trip through Admin and export',async()=>{
+ const env=fixture();const details={days:'both',meal:'banku',accommodation:'assistance',transport:'shared',travelFrom:'Sunyani',activities:['boat','golf'],dietary:'No peanuts',notes:'Step-free access requested'};
+ assert.equal((await worker.fetch(request('/api/registrations',{...record,details:{meal:'invalid'}}),env)).status,400);
+ assert.equal((await worker.fetch(request('/api/registrations',{...record,details}),env)).status,201);
+ const login=await worker.fetch(request('/api/admin/login',{password:env.ADMIN_PASSWORD}),env);const token=login.headers.get('Set-Cookie').split(';')[0];
+ const list=await(await worker.fetch(request('/api/admin/registrations',undefined,token),env)).json();assert.deepEqual(list.registrations[0].details,details);
+ const csv=await(await worker.fetch(request('/api/admin/export',undefined,token),env)).text();assert(csv.includes('No peanuts'));assert(csv.includes('Sunyani'));assert(csv.includes('boat; golf'));
+});
+test('existing registration tables migrate without losing attendance records',async()=>{
+ const db=new DatabaseSync(':memory:');db.exec("CREATE TABLE registrations(id INTEGER PRIMARY KEY AUTOINCREMENT,event_id TEXT NOT NULL,name TEXT NOT NULL,email TEXT NOT NULL,phone TEXT NOT NULL DEFAULT '',attendance TEXT NOT NULL,consent_version TEXT NOT NULL,created_at TEXT NOT NULL DEFAULT '',UNIQUE(event_id,email)); INSERT INTO registrations(event_id,name,email,attendance,consent_version) VALUES('lxg-reunion-2026','Existing Member','existing@example.com','yes','2026-10-10');");
+ const wrap=(sql,args=[])=>({bind(...a){return wrap(sql,a);},async first(){return db.prepare(sql).get(...args)||null;},async all(){return {results:db.prepare(sql).all(...args)};},async run(){return db.prepare(sql).run(...args);}});
+ const env={...fixture(),DB:{prepare:sql=>wrap(sql),batch:queries=>Promise.all(queries.map(q=>q.all()))}};
+ const login=await worker.fetch(request('/api/admin/login',{password:env.ADMIN_PASSWORD}),env);assert.equal(login.status,200);const token=login.headers.get('Set-Cookie').split(';')[0];
+ const data=await(await worker.fetch(request('/api/admin/registrations',undefined,token),env)).json();assert.equal(data.total,1);assert.equal(data.registrations[0].name,'Existing Member');assert.deepEqual(data.registrations[0].details,{});
+});

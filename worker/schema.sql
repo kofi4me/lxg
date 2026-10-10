@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS registrations (
  phone TEXT NOT NULL DEFAULT '',
  attendance TEXT NOT NULL CHECK(attendance IN ('yes','no')),
  consent_version TEXT NOT NULL,
+ details_json TEXT NOT NULL DEFAULT '{}',
  created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now')),
  UNIQUE(event_id,email)
 );

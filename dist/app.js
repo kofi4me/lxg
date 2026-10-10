@@ -50,11 +50,16 @@ attendanceForm?.addEventListener('submit', async event => {
  button.disabled=true;button.textContent='Submitting…';status.textContent='';
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),20000);
  try {
-  const response=await fetch('/api/registrations',{method:'POST',headers:{'Content-Type':'application/json'},signal:controller.signal,body:JSON.stringify({name:data.get('name'),email:data.get('email'),phone:data.get('phone'),attendance:data.get('attendance'),consent:data.get('consent')==='on',website:data.get('website')})});
+  const response=await fetch('/api/registrations',{method:'POST',headers:{'Content-Type':'application/json'},signal:controller.signal,body:JSON.stringify({name:data.get('name'),email:data.get('email'),phone:data.get('phone'),attendance:data.get('attendance'),consent:data.get('consent')==='on',website:data.get('website'),details:{days:data.get('days')||'',meal:data.get('meal')||'',accommodation:data.get('accommodation')||'',transport:data.get('transport')||'',travelFrom:data.get('travelFrom')||'',activities:data.getAll('activities'),dietary:data.get('dietary')||'',notes:data.get('notes')||''}})});
   const result=await response.json().catch(()=>{throw new Error('The registration service is unavailable. Please try again later or contact the organiser.');});
   if(!response.ok)throw new Error(result.error||'Registration could not be submitted. Please try again.');
   status.textContent=`Thank you. Your attendance response has been received by the event administrator. Reference: ${result.reference}.`;
   attendanceForm.reset();
+  updateAttendancePreferences();
  }catch(error){status.textContent=error.name==='AbortError'?'The request timed out. Your registration may have been received. Please retry or contact the organiser.':error instanceof TypeError?'Unable to connect. Please check your internet connection and try again.':error.message;}
  finally{clearTimeout(timer);button.disabled=false;button.textContent='Submit registration';}
 });
+
+function updateAttendancePreferences(){const preferences=document.querySelector('#event-preferences');if(preferences)preferences.disabled=attendanceForm.querySelector('[name="attendance"]').value==='no';}
+attendanceForm?.querySelector('[name="attendance"]').addEventListener('change',updateAttendancePreferences);
+updateAttendancePreferences();

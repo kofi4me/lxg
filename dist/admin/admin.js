@@ -3,8 +3,8 @@ let page=1,total=0,busy=false,search='',attendance='';
 function showLogin(){ $('#login-panel').hidden=false;$('#dashboard').hidden=true;$('#registrations').replaceChildren(); }
 async function api(path,options={}){
  const response=await fetch(path,{credentials:'same-origin',cache:'no-store',...options});
- if(response.status===401){showLogin();throw new Error('Please sign in.');}
- if(!response.ok){let data;try{data=await response.json();}catch{}throw new Error(data?.error||'Unable to complete this request.');}
+ if(response.status===401){showLogin();let data;try{data=await response.json();}catch{}throw new Error(data?.error||'Please sign in.');}
+ if(!response.ok){let data;try{data=await response.json();}catch{}throw new Error(data?.error||(response.status===404?'The Admin service has not been deployed. Deploy the latest GitHub commit to the lxg Worker.':'Unable to complete this request.'));}
  return response;
 }
 async function load(){
@@ -15,7 +15,9 @@ async function load(){
   $('#login-panel').hidden=true;$('#dashboard').hidden=false;$('#admin-status').textContent='';
   total=data.total;for(const key of ['total','attending','declined'])$('#'+key).textContent=data.stats[key];
   const body=$('#registrations');body.replaceChildren();
-  for(const row of data.registrations){const tr=document.createElement('tr');for(const value of [`LXG-${row.id}`,row.name,row.email,row.phone||'—',row.attendance==='yes'?'Attending':'Unable to attend',new Date(row.created_at).toLocaleString()]){const td=document.createElement('td');td.textContent=value;tr.append(td);}body.append(tr);}
+  for(const row of data.registrations){const tr=document.createElement('tr');for(const value of [`LXG-${row.id}`,row.name,row.email,row.phone||'—',row.attendance==='yes'?'Attending':'Unable to attend',new Date(row.created_at).toLocaleString()]){const td=document.createElement('td');td.textContent=value;tr.append(td);}const td=document.createElement('td'),details=document.createElement('details'),summary=document.createElement('summary');summary.textContent='View preferences';details.append(summary);const d=row.details||{};
+  const labels={both:'Both days',friday:'Friday only',saturday:'Saturday only',jollof:'Jollof rice with grilled chicken',waakye:'Waakye',banku:'Banku with grilled tilapia',fufu:'Fufu with light soup',ampesi:'Ampesi with palava sauce',kenkey:'Kenkey with fish and pepper',vegetarian:'Vegetarian meal',assistance:'Accommodation information requested',own:'Own arrangements',none:'No overnight stay',shared:'Shared transport',boat:'Boat riding','jet-ski':'Jet skiing',golf:'Golf',games:'Group games'};
+  for(const [label,value] of [['Days',d.days],['Meal',d.meal],['Accommodation',d.accommodation],['Transport',d.transport],['Travelling from',d.travelFrom],['Activities',(d.activities||[]).map(x=>labels[x]||x).join(', ')],['Dietary requirements',d.dietary],['Other arrangements',d.notes]]){const p=document.createElement('p');p.textContent=label+': '+(labels[value]||value||'Not specified');details.append(p);}td.append(details);tr.append(td);body.append(tr);}
   $('#empty').hidden=data.registrations.length>0;
   $('#results-caption').textContent=`${total} registration${total===1?'':'s'} matching this view`;
   $('#page-label').textContent=`Page ${page} of ${Math.max(1,Math.ceil(total/50))}`;

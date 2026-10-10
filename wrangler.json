@@ -12,7 +12,8 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "lxg-registrations"
+      "database_name": "lxg-registrations",
+      "database_id": "ca564b7a-7ae5-4ff4-bc94-4a6cc674256e"
     }
   ]
 }

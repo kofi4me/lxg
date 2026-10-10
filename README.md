@@ -46,3 +46,7 @@ Official guide: https://developers.cloudflare.com/pages/framework-guides/deploy-
 ## Local preview
 
 From the repository root run `python -m http.server 18765 --directory dist`, then open http://localhost:18765/.
+
+
+## Events update — 10 October 2026
+LXG establishment year corrected to 2012 throughout the website, as confirmed by LXG. Events navigation and an executive meeting section have been added. Attendance form fields include name, email, optional phone, attendance response and consent. Registration remains explicitly closed and fields disabled until the event details and submission destination are supplied. No attendance data is stored or transmitted. The programme and official logo were not available in this conversation or the LXG project folder; the unrelated July 2025 poultry agenda was not published.

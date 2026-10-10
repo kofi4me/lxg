@@ -3,3 +3,19 @@
 /* Formal association title: retain readable proportions across viewports. */
 .hero h1{font-size:clamp(2.7rem,4.6vw,4.9rem);line-height:1.12;letter-spacing:-1.5px}.hero .intro{max-width:540px}.seal span{letter-spacing:.5px}.text-link{display:inline-block;margin-top:14px}@media(max-width:720px){.hero h1{font-size:clamp(2.1rem,7.6vw,3.8rem);letter-spacing:-1px}}
 .photo img{width:100%;height:100%;position:absolute;inset:0;object-fit:cover;object-position:center top}.member-role{display:block;font-size:14px;line-height:1.45;margin-top:8px}.member-status{display:block;margin-top:5px}.member-card>a{display:inline-block;color:#71501d;border-bottom:1px solid #c4aa7a;font-size:14px;margin-top:10px}.dialog-photo{position:relative;overflow:hidden;width:130px;height:150px;display:flex;flex-direction:column;justify-content:center;align-items:center}.dialog-photo img{width:100%;height:100%;object-fit:cover;object-position:center top}.dialog-photo small{font:12px Arial,sans-serif}.source-links a{display:block;margin:5px 0}dialog dd a{color:#70501c;text-decoration:underline}.member-name{line-height:1.25}dialog .eyebrow{padding-right:50px}
+
+/* Events and attendance registration */
+.events-nav{border:1px solid currentColor;padding:.45rem .8rem;border-radius:4px}
+.event-layout{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start}
+.event-programme,.attendance-form{padding:2rem;border:1px solid #d8d4ca;border-radius:8px;background:#fff;color:#102737}
+.event-programme h3,.attendance-form h3{font-size:1.5rem;margin-top:0}
+.event-programme .button{margin-top:1rem}
+.attendance-form fieldset{border:0;padding:0;margin:1.5rem 0 0;min-width:0}
+.attendance-form legend{font-weight:600;margin-bottom:1rem}
+.attendance-form label{display:block;margin:.9rem 0 .4rem;font-weight:600}
+.attendance-form label span{font-weight:400}
+.attendance-form input:not([type=checkbox]),.attendance-form select{width:100%;box-sizing:border-box;padding:.8rem;border:1px solid #8c969c;border-radius:4px;font:inherit;background:#faf9f6;color:#102737}
+.attendance-form .consent{display:flex;gap:.65rem;align-items:flex-start;margin:1.3rem 0;font-size:.9rem;line-height:1.5}
+.attendance-form .consent input{margin-top:.3rem;flex-shrink:0}
+.attendance-form button:disabled{opacity:.65;cursor:not-allowed}
+@media(max-width:760px){.event-layout{grid-template-columns:1fr;gap:1.5rem}.event-programme,.attendance-form{padding:1.25rem}}

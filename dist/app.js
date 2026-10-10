@@ -40,3 +40,6 @@ for(const member of members){
 dialog.querySelector('.close').addEventListener('click',()=>dialog.close());
 dialog.addEventListener('click',event=>{const r=dialog.getBoundingClientRect();if(event.target===dialog&&(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom))dialog.close();});
 dialog.addEventListener('close',()=>lastTrigger?.focus());
+
+// Keep registration closed until the event and submission destination are configured.
+document.querySelector('#attendance-form')?.addEventListener('submit',event=>event.preventDefault());

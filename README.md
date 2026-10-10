@@ -60,9 +60,9 @@ Registration email configured: gr8owusu222@gmail.com, as supplied by LXG. The en
 
 ## Existing Cloudflare Workers deployment
 
-The existing site is https://lxgmen.gr8owusu222.workers.dev/. Deploy it as Worker `lxgmen` using the root `wrangler.json`, which serves static assets from `dist`.
+The existing site is https://lxg.gr8owusu222.workers.dev/. Deploy it as Worker `lxg` using the root `wrangler.json`, which serves static assets from `dist`.
 
-In Cloudflare, open **Workers & Pages > lxgmen > Settings > Builds**. Connect `kofi4me/lxg`, select production branch `main`, leave the build command empty and the root directory at the repository root, and use deploy command `npx wrangler deploy`. Trigger a new build from the latest main commit. A successful GitHub push alone does not confirm that Cloudflare deployed it.
+In Cloudflare, open **Workers & Pages > lxg > Settings > Builds**. Connect `kofi4me/lxg`, select production branch `main`, leave the build command empty and the root directory at the repository root, and use deploy command `npx wrangler deploy`. Trigger a new build from the latest main commit. A successful GitHub push alone does not confirm that Cloudflare deployed it.
 
 The earlier Pages instructions apply only if creating a separate Pages project.
 
@@ -73,7 +73,7 @@ The website now submits registrations to `/api/registrations` and stores them in
 
 ### Activate on Cloudflare
 
-1. Open **Workers & Pages > lxgmen > Settings > Variables and Secrets**. Add a **Secret** named `ADMIN_PASSWORD`. Set a unique password of at least 16 characters (maximum 256). Save/deploy the secret. Never put the password in GitHub or send it in chat.
+1. Open **Workers & Pages > lxg > Settings > Variables and Secrets**. Add a **Secret** named `ADMIN_PASSWORD`. Set a unique password of at least 16 characters (maximum 256). Save/deploy the secret. Never put the password in GitHub or send it in chat.
 2. Under **Settings > Builds**, connect `kofi4me/lxg`, branch `main`. Use the repository root, no build command, and deploy command `npx wrangler deploy`. Use current Wrangler 4, which supports automatic D1 provisioning.
 3. Deploy the latest commit. `wrangler.json` declares the `DB` binding and database name `lxg-registrations`. Wrangler automatically creates or connects the D1 database. Tables are created idempotently on the first API request; existing data is preserved.
 4. After deployment, verify that **Bindings** includes a D1 binding named `DB`. If resource provisioning is rejected, create `lxg-registrations` under **Storage & databases > D1**, then add its `database_id` to the `d1_databases` entry in `wrangler.json` and redeploy. Database IDs are configuration, not passwords. Pin the provisioned ID in this file after the first deployment to make the database connection explicit.
@@ -91,3 +91,6 @@ Setup has not been verified in the live Cloudflare account. Without `DB` and a v
 - Keep `worker/schema.sql` and `worker/schema.mjs` in sync when changing the initial schema. Future changes to existing tables need an explicit migration.
 
 Cloudflare provisioning documentation: https://developers.cloudflare.com/workers/wrangler/configuration/#automatic-provisioning
+
+
+Site address updated to https://lxg.gr8owusu222.workers.dev/ and Worker name changed to `lxg`. Main banner seal reduced from 480px to 120px (one-quarter width and height). Database name remains `lxg-registrations`; the new Worker needs its own `ADMIN_PASSWORD` secret and the existing database binding to retain registrations.

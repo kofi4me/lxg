@@ -32,3 +32,6 @@
 #registration-status{font-weight:600;overflow-wrap:anywhere}
 
 .registration-columns{display:grid;grid-template-columns:1fr 1fr;gap:0 1.5rem}.attendance-form textarea{width:100%;box-sizing:border-box;padding:.8rem;border:1px solid #8c969c;border-radius:4px;font:inherit;background:#faf9f6;color:#102737;resize:vertical}.form-note{font-size:.9rem;color:var(--muted)}.attendance-form .activity-options{display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;margin:1rem 0}.attendance-form .activity-options label{font-weight:400}.attendance-form fieldset:disabled{opacity:.55}@media(max-width:600px){.registration-columns{grid-template-columns:1fr}}
+
+/* Full-width introductory banner */
+.hero{grid-template-columns:minmax(0,1fr);column-gap:0}.hero h1{max-width:none;text-wrap:balance}.hero .intro{max-width:none;width:100%}.hero-foot{grid-column:1}

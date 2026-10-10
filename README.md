@@ -100,3 +100,5 @@ Form expansion: added Ghanaian meal preferences, dietary requirements, attendanc
 
 
 Navigation update: Home displays only the introductory banner. About LXG, Vision & mission, Members, Achievements and Events each show a separate section through navigation.js. Existing #events and #attendance-form links continue to open the correct view; browser Back/Forward switches views. Home is the default and selected navigation is marked for accessibility.
+
+Public organiser email removed from the website and API responses. Admin setup errors now distinguish missing DB binding, missing ADMIN_PASSWORD and passwords shorter than 16 characters. Live diagnosis returned registrationReady=false and HTTP 503 before authentication; configure secrets and bindings on the current lxg Worker, not the former lxgmen Worker.

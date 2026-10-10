@@ -62,3 +62,11 @@ test('existing registration tables migrate without losing attendance records',as
  const login=await worker.fetch(request('/api/admin/login',{password:env.ADMIN_PASSWORD}),env);assert.equal(login.status,200);const token=login.headers.get('Set-Cookie').split(';')[0];
  const data=await(await worker.fetch(request('/api/admin/registrations',undefined,token),env)).json();assert.equal(data.total,1);assert.equal(data.registrations[0].name,'Existing Member');assert.deepEqual(data.registrations[0].details,{});
 });
+
+test('Admin setup errors distinguish missing database, missing secret and short secret',async()=>{
+ const env=fixture();
+ const missingDb=await(await worker.fetch(request('/api/admin/registrations'),{ADMIN_PASSWORD:env.ADMIN_PASSWORD})).json();assert.match(missingDb.error,/database binding named DB/);
+ const missingSecret=await(await worker.fetch(request('/api/admin/registrations'),{DB:env.DB})).json();assert.match(missingSecret.error,/Secret named ADMIN_PASSWORD/);
+ const shortSecret=await(await worker.fetch(request('/api/admin/registrations'),{...env,ADMIN_PASSWORD:'short'})).json();assert.match(shortSecret.error,/at least 16 characters/);
+ assert(!JSON.stringify(missingDb).includes(env.ADMIN_PASSWORD));
+});

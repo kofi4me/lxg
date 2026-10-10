@@ -59,8 +59,12 @@ function csvCell(value){let s=String(value??'');if(/^[\s]*[=+@-]/.test(s))s="'"+
 export default {async fetch(request,env) {
  const url=new URL(request.url),path=url.pathname;
  if(!path.startsWith('/api/'))return env.ASSETS.fetch(request);
- if(path==='/api/health'&&request.method==='GET')return json({release:'2026-10-10-menu',registrationReady:!!env.DB&&!!env.ADMIN_PASSWORD&&env.ADMIN_PASSWORD.length>=16});
- if(!env.DB||!env.ADMIN_PASSWORD||env.ADMIN_PASSWORD.length<16)return json({error:'Registration service is being configured. Please contact the organiser.'},503);
+ if(path==='/api/health'&&request.method==='GET')return json({release:'2026-10-10-admin-setup',registrationReady:!!env.DB&&!!env.ADMIN_PASSWORD&&env.ADMIN_PASSWORD.length>=16});
+ const setupIssues=[];
+ if(!env.DB)setupIssues.push('Add the D1 database binding named DB to the lxg Worker.');
+ if(typeof env.ADMIN_PASSWORD!=='string'||!env.ADMIN_PASSWORD)setupIssues.push('Add a Secret named ADMIN_PASSWORD under lxg > Settings > Variables and Secrets.');
+ else if(env.ADMIN_PASSWORD.length<16)setupIssues.push('Set ADMIN_PASSWORD to at least 16 characters.');
+ if(setupIssues.length)return json({error:path.startsWith('/api/admin/')?'Admin setup incomplete. '+setupIssues.join(' ')+' Save and deploy the changes.':'Registration is temporarily unavailable. Please try again later.',code:'SETUP_INCOMPLETE'},503);
  if(!['GET','POST'].includes(request.method))return json({error:'Method not allowed.'},405);
  if(request.method==='POST'&&request.headers.get('Origin')!==url.origin)return json({error:'Request not permitted.'},403);
  try {
@@ -76,7 +80,7 @@ export default {async fetch(request,env) {
    if(!name||name.length>120||/[\x00-\x1f]/.test(name)||email.length>254||!/^\S+@[^\s@]+\.[^\s@]+$/.test(email)||phone.length>40||!['yes','no'].includes(body.attendance)||body.consent!==true)return json({error:'Enter your name, a valid email, attendance response and consent.'},400);
    let details;try{details=preferences(body);}catch{return json({error:'Please check the meal and visit preferences.'},400);}
    const row=await env.DB.prepare('INSERT INTO registrations(event_id,name,email,phone,attendance,consent_version,details_json) VALUES(?,?,?,?,?,?,?) ON CONFLICT(event_id,email) DO NOTHING RETURNING id').bind(EVENT,name,email,phone,body.attendance,'2026-10-10',JSON.stringify(details)).first();
-   if(!row)return json({error:'This email already has a registration. Contact gr8owusu222@gmail.com to request changes.'},409);
+   if(!row)return json({error:'This email already has a registration. Please contact the event organiser to request changes.'},409);
    return json({ok:true,reference:`LXG-${row.id}`},201);
   }
   if(path==='/api/admin/login'&&request.method==='POST'){

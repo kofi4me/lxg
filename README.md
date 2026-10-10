@@ -56,3 +56,12 @@ LXG establishment year corrected to 2012 throughout the website, as confirmed by
 
 
 Registration email configured: gr8owusu222@gmail.com, as supplied by LXG. The enabled form validates required fields and consent, then opens a mailto draft containing the attendance details. Members must send the message in their email application. No backend storage or automatic email delivery is configured; the page includes a direct-email fallback and never reports an unsent draft as a completed registration.
+
+
+## Existing Cloudflare Workers deployment
+
+The existing site is https://lxgmen.gr8owusu222.workers.dev/. Deploy it as Worker `lxgmen` using the root `wrangler.json`, which serves static assets from `dist`.
+
+In Cloudflare, open **Workers & Pages > lxgmen > Settings > Builds**. Connect `kofi4me/lxg`, select production branch `main`, leave the build command empty and the root directory at the repository root, and use deploy command `npx wrangler deploy`. Trigger a new build from the latest main commit. A successful GitHub push alone does not confirm that Cloudflare deployed it.
+
+The earlier Pages instructions apply only if creating a separate Pages project.

@@ -39,7 +39,7 @@ Razak Ray Farouk added to slot 11 on 9 October 2026, associated with ROUK Logist
 5. Set build output directory to **dist** and leave the root directory at the repository root.
 6. Save and deploy. Subsequent pushes to `main` will trigger deployments once Git integration is connected.
 
-No environment variables, package installation, or server runtime are required. Cloudflare serves `dist/index.html` and the adjacent assets. Configure a custom domain in the Pages project after the first successful deployment.
+The original static website required no server runtime. Direct registration now requires the Worker, D1 database and Admin secret described below; a static-only Pages deployment will not provide registration or Admin functions. Configure a custom domain in the Pages project after the first successful deployment.
 
 Official guide: https://developers.cloudflare.com/pages/framework-guides/deploy-anything/
 
@@ -65,3 +65,29 @@ The existing site is https://lxgmen.gr8owusu222.workers.dev/. Deploy it as Worke
 In Cloudflare, open **Workers & Pages > lxgmen > Settings > Builds**. Connect `kofi4me/lxg`, select production branch `main`, leave the build command empty and the root directory at the repository root, and use deploy command `npx wrangler deploy`. Trigger a new build from the latest main commit. A successful GitHub push alone does not confirm that Cloudflare deployed it.
 
 The earlier Pages instructions apply only if creating a separate Pages project.
+
+
+## Direct registration and Admin dashboard
+
+The website now submits registrations to `/api/registrations` and stores them in Cloudflare D1. The Admin dashboard at `/admin/` offers password-protected access, search, attendance filters, totals, pagination and CSV export. This replaces email drafts; no email application opens and no automatic notification email is sent. Registrations are available in the Admin dashboard after a successful submission.
+
+### Activate on Cloudflare
+
+1. Open **Workers & Pages > lxgmen > Settings > Variables and Secrets**. Add a **Secret** named `ADMIN_PASSWORD`. Set a unique password of at least 16 characters (maximum 256). Save/deploy the secret. Never put the password in GitHub or send it in chat.
+2. Under **Settings > Builds**, connect `kofi4me/lxg`, branch `main`. Use the repository root, no build command, and deploy command `npx wrangler deploy`. Use current Wrangler 4, which supports automatic D1 provisioning.
+3. Deploy the latest commit. `wrangler.json` declares the `DB` binding and database name `lxg-registrations`. Wrangler automatically creates or connects the D1 database. Tables are created idempotently on the first API request; existing data is preserved.
+4. After deployment, verify that **Bindings** includes a D1 binding named `DB`. If resource provisioning is rejected, create `lxg-registrations` under **Storage & databases > D1**, then add its `database_id` to the `d1_databases` entry in `wrangler.json` and redeploy. Database IDs are configuration, not passwords. Pin the provisioned ID in this file after the first deployment to make the database connection explicit.
+5. Open `/admin/` and sign in. Submit a test attendance response from the event form and confirm it appears. Verify an unauthenticated visit cannot fetch `/api/admin/registrations`.
+
+Setup has not been verified in the live Cloudflare account. Without `DB` and a valid `ADMIN_PASSWORD`, the API returns a clear unavailable message and does not claim registrations were saved.
+
+### Security and operation
+
+- Required-field validation and consent are enforced on the server. One registration per email address per event; public visitors cannot overwrite an existing response. Contact the organiser for corrections.
+- Admin sessions last eight hours, use HttpOnly Secure SameSite cookies, and are revoked on logout or password change. Login attempts are limited and visitor IP addresses are stored only as salted hashes in short-lived rate-limit records.
+- Responses and exports are marked no-store. CSV values are escaped against spreadsheet formula execution. Registration data is never included in public static assets.
+- Secret files `.dev.vars` and `.env` are ignored by Git. To test locally, set `ADMIN_PASSWORD` in `.dev.vars`, then run `npx wrangler dev`. The plain Python static preview cannot serve registration endpoints.
+- Run backend checks with Node 22.13 or newer: `node --test tests/registration.test.mjs`. The tests use SQLite with a D1-compatible adapter. Syntax checks: `node --check worker/index.mjs`, `node --check dist/app.js`, `node --check dist/admin/admin.js`.
+- Keep `worker/schema.sql` and `worker/schema.mjs` in sync when changing the initial schema. Future changes to existing tables need an explicit migration.
+
+Cloudflare provisioning documentation: https://developers.cloudflare.com/workers/wrangler/configuration/#automatic-provisioning

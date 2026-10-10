@@ -41,33 +41,20 @@ dialog.querySelector('.close').addEventListener('click',()=>dialog.close());
 dialog.addEventListener('click',event=>{const r=dialog.getBoundingClientRect();if(event.target===dialog&&(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom))dialog.close();});
 dialog.addEventListener('close',()=>lastTrigger?.focus());
 
-// Registration opens a draft in the member's email app; it does not send automatically.
+// Registration is confirmed only after the server saves the record.
 const attendanceForm = document.querySelector('#attendance-form');
-attendanceForm?.addEventListener('submit', event => {
+attendanceForm?.addEventListener('submit', async event => {
  event.preventDefault();
- if (!attendanceForm.reportValidity()) return;
- const data = new FormData(attendanceForm);
- const name = String(data.get('name') || '').trim();
- const nameInput = attendanceForm.querySelector('[name="name"]');
- if (!name) {
-  nameInput.setCustomValidity('Please enter your full name.');
-  nameInput.reportValidity();
-  return;
- }
- const body = [
-  'LXG Reunion attendance registration',
-  '13–14 November 2026',
-  'Adi Lake Resort, Akosombo, Eastern Region',
-  '',
-  `Full name: ${name}`,
-  `Email: ${String(data.get('email') || '').trim()}`,
-  `Phone: ${String(data.get('phone') || '').trim() || 'Not provided'}`,
-  `Attendance: ${data.get('attendance') === 'yes' ? 'I will attend' : 'I am unable to attend'}`,
-  '',
-  'I agree that LXG may use these details to manage my attendance and contact me about this meeting.'
- ].join('\r\n');
- const url = 'mailto:gr8owusu222@gmail.com?subject=' + encodeURIComponent('LXG Reunion — Attendance registration') + '&body=' + encodeURIComponent(body);
- document.querySelector('#registration-status').textContent = 'Your registration email is ready. Review and send it in your email app to complete registration. This website has not sent or saved your registration.';
- window.location.href = url;
+ if(!attendanceForm.reportValidity())return;
+ const data=new FormData(attendanceForm),status=document.querySelector('#registration-status'),button=attendanceForm.querySelector('button[type="submit"]');
+ button.disabled=true;button.textContent='Submitting…';status.textContent='';
+ const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),20000);
+ try {
+  const response=await fetch('/api/registrations',{method:'POST',headers:{'Content-Type':'application/json'},signal:controller.signal,body:JSON.stringify({name:data.get('name'),email:data.get('email'),phone:data.get('phone'),attendance:data.get('attendance'),consent:data.get('consent')==='on',website:data.get('website')})});
+  const result=await response.json().catch(()=>{throw new Error('The registration service is unavailable. Please try again later or contact the organiser.');});
+  if(!response.ok)throw new Error(result.error||'Registration could not be submitted. Please try again.');
+  status.textContent=`Thank you. Your attendance response has been received by the event administrator. Reference: ${result.reference}.`;
+  attendanceForm.reset();
+ }catch(error){status.textContent=error.name==='AbortError'?'The request timed out. Your registration may have been received. Please retry or contact the organiser.':error instanceof TypeError?'Unable to connect. Please check your internet connection and try again.':error.message;}
+ finally{clearTimeout(timer);button.disabled=false;button.textContent='Submit registration';}
 });
-attendanceForm?.querySelector('[name="name"]').addEventListener('input', event => event.target.setCustomValidity(''));

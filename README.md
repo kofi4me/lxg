@@ -97,3 +97,6 @@ Site address updated to https://lxg.gr8owusu222.workers.dev/ and Worker name cha
 
 
 Form expansion: added Ghanaian meal preferences, dietary requirements, attendance days, accommodation and transport preferences, departure city, activity interests and other arrangements. These are planning requests, not confirmed resort offerings. Admin detail views and CSV include them. Existing databases gain a details_json column automatically, preserving previous registrations. The main logo is explicitly capped at 96px in HTML and CSS. CSS/JS asset URLs are versioned. Admin is available at /admin/ and /admin.html. /api/health identifies the deployed release without exposing registration records. Live inspection before this update found an older static site and 404 for Admin/API; the new Worker must be deployed.
+
+
+Navigation update: Home displays only the introductory banner. About LXG, Vision & mission, Members, Achievements and Events each show a separate section through navigation.js. Existing #events and #attendance-form links continue to open the correct view; browser Back/Forward switches views. Home is the default and selected navigation is marked for accessibility.

@@ -35,3 +35,6 @@
 
 /* Full-width introductory banner */
 .hero{grid-template-columns:minmax(0,1fr);column-gap:0}.hero h1{max-width:none;text-wrap:balance}.hero .intro{max-width:none;width:100%}.hero-foot{grid-column:1}
+
+/* Button-selected pages: Home contains only the introductory banner. */
+main>section[hidden]{display:none!important}main{min-height:60vh}nav a[aria-current="page"]{color:#71501d;border-bottom:2px solid #b58a44;padding-bottom:5px}header{flex-wrap:wrap}nav{flex-wrap:wrap}#attendance-form{scroll-margin-top:24px}

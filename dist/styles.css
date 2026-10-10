@@ -6,7 +6,7 @@
 
 /* Events and attendance registration */
 .events-nav{border:1px solid currentColor;padding:.45rem .8rem;border-radius:4px}
-.event-layout{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start}
+.event-layout{display:grid;grid-template-columns:1fr;gap:2rem;align-items:start}
 .event-programme,.attendance-form{padding:2rem;border:1px solid #d8d4ca;border-radius:8px;background:#fff;color:#102737}
 .event-programme h3,.attendance-form h3{font-size:1.5rem;margin-top:0}
 .event-programme .button{margin-top:1rem}

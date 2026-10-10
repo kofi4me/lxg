@@ -19,3 +19,11 @@
 .attendance-form .consent input{margin-top:.3rem;flex-shrink:0}
 .attendance-form button:disabled{opacity:.65;cursor:not-allowed}
 @media(max-width:760px){.event-layout{grid-template-columns:1fr;gap:1.5rem}.event-programme,.attendance-form{padding:1.25rem}}
+
+/* Official LXG identity and reunion programme */
+.brand-logo{display:block;width:64px;height:64px;object-fit:contain;border-radius:50%;flex-shrink:0}
+.official-seal{display:block;width:min(100%,480px);height:auto;border-radius:50%;margin:auto}
+.programme-day{margin-top:2rem}.event-programme h4{font-size:1.2rem;margin:2rem 0 1rem}.event-programme h5{font-size:1rem;line-height:1.5;margin:0 0 .7rem}
+.schedule{width:100%;border-collapse:collapse;text-align:left}.schedule th,.schedule td{padding:1rem;border-bottom:1px solid #ddd8ce;vertical-align:top;line-height:1.6}.schedule thead{background:#102737;color:#fff}.schedule tbody th{width:150px;font-weight:600}.schedule small{font-size:.9rem;color:#52616a}
+.breakout-groups{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.5rem}.breakout-groups section{background:#f7f5f0;padding:1.25rem;border-top:3px solid #d5a645}.event-programme ul{padding-left:1.2rem;line-height:1.8}.programme-actions{display:flex;gap:1.5rem;flex-wrap:wrap;align-items:center}
+@media(max-width:760px){.breakout-groups{grid-template-columns:1fr}.schedule th,.schedule td{padding:.75rem .5rem}.schedule tbody th{width:95px}.brand-logo{width:48px;height:48px}}

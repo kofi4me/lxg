@@ -50,3 +50,6 @@ From the repository root run `python -m http.server 18765 --directory dist`, the
 
 ## Events update — 10 October 2026
 LXG establishment year corrected to 2012 throughout the website, as confirmed by LXG. Events navigation and an executive meeting section have been added. Attendance form fields include name, email, optional phone, attendance response and consent. Registration remains explicitly closed and fields disabled until the event details and submission destination are supplied. No attendance data is stored or transmitted. The programme and official logo were not available in this conversation or the LXG project folder; the unrelated July 2025 poultry agenda was not published.
+
+
+10 October 2026: Incorporated the supplied LXG Reunion programme for 13–14 November 2026 at Adi Lake Resort, Akosombo, including the two-day schedule, breakout groups and packing list. Original Word programme available for download. Supplied PDF seal rendered faithfully to images/lxg-seal.png and used in header, hero, footer and favicon. Founding year remains 2012. Form remains below the programme; submission is not enabled until an organiser email or storage destination is configured.

@@ -53,3 +53,6 @@ LXG establishment year corrected to 2012 throughout the website, as confirmed by
 
 
 10 October 2026: Incorporated the supplied LXG Reunion programme for 13–14 November 2026 at Adi Lake Resort, Akosombo, including the two-day schedule, breakout groups and packing list. Original Word programme available for download. Supplied PDF seal rendered faithfully to images/lxg-seal.png and used in header, hero, footer and favicon. Founding year remains 2012. Form remains below the programme; submission is not enabled until an organiser email or storage destination is configured.
+
+
+Registration email configured: gr8owusu222@gmail.com, as supplied by LXG. The enabled form validates required fields and consent, then opens a mailto draft containing the attendance details. Members must send the message in their email application. No backend storage or automatic email delivery is configured; the page includes a direct-email fallback and never reports an unsent draft as a completed registration.

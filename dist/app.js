@@ -41,5 +41,33 @@ dialog.querySelector('.close').addEventListener('click',()=>dialog.close());
 dialog.addEventListener('click',event=>{const r=dialog.getBoundingClientRect();if(event.target===dialog&&(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom))dialog.close();});
 dialog.addEventListener('close',()=>lastTrigger?.focus());
 
-// Keep registration closed until the event and submission destination are configured.
-document.querySelector('#attendance-form')?.addEventListener('submit',event=>event.preventDefault());
+// Registration opens a draft in the member's email app; it does not send automatically.
+const attendanceForm = document.querySelector('#attendance-form');
+attendanceForm?.addEventListener('submit', event => {
+ event.preventDefault();
+ if (!attendanceForm.reportValidity()) return;
+ const data = new FormData(attendanceForm);
+ const name = String(data.get('name') || '').trim();
+ const nameInput = attendanceForm.querySelector('[name="name"]');
+ if (!name) {
+  nameInput.setCustomValidity('Please enter your full name.');
+  nameInput.reportValidity();
+  return;
+ }
+ const body = [
+  'LXG Reunion attendance registration',
+  '13–14 November 2026',
+  'Adi Lake Resort, Akosombo, Eastern Region',
+  '',
+  `Full name: ${name}`,
+  `Email: ${String(data.get('email') || '').trim()}`,
+  `Phone: ${String(data.get('phone') || '').trim() || 'Not provided'}`,
+  `Attendance: ${data.get('attendance') === 'yes' ? 'I will attend' : 'I am unable to attend'}`,
+  '',
+  'I agree that LXG may use these details to manage my attendance and contact me about this meeting.'
+ ].join('\r\n');
+ const url = 'mailto:gr8owusu222@gmail.com?subject=' + encodeURIComponent('LXG Reunion — Attendance registration') + '&body=' + encodeURIComponent(body);
+ document.querySelector('#registration-status').textContent = 'Your registration email is ready. Review and send it in your email app to complete registration. This website has not sent or saved your registration.';
+ window.location.href = url;
+});
+attendanceForm?.querySelector('[name="name"]').addEventListener('input', event => event.target.setCustomValidity(''));
